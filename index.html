@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎁 My Christmas Gift List 🎄</title>
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f7f0f7;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { 
+      color: #d62828; 
+      cursor: default;
+    }
+
+    /* Make only the gift icon clickable secretly */
+    .secret-admin {
+      cursor: pointer;
+    }
+
+    ul { list-style: none; padding: 0; }
+    li {
+      background: white;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 450px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    a { text-decoration: none; font-weight: bold; color: #0077b6; }
+
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #d62828;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 🎁 ICON is now the secret Admin trigger -->
+  <h1>
+    <span class="secret-admin" onclick="openAdminLogin()">🎁</span>
+    My Christmas Gift List 🎄
+  </h1>
+
+  <ul id="giftList"></ul>
+
+  <div id="toast"></div>
+
+  <script>
+    const defaultItems = [
+      { name: "Apple IPhone", url: "https://www.amazon.in/iPhone-16-128-GB-Control/dp/B0DGJHBX5Y/ref=sr_1_10?crid=2Z8EWVF77O570&dib=eyJ2IjoiMSJ9.GtbzqrOW2c9P1QmN-FL-P_2E-6DRgDb8ruFPymVELeqD4JrNlLDR77lxGOUEC5qXexNXSAxNR5G2k0CjCz-UkWgb48g7qW5OAVd28JIui4WJZgRi0lezJCcq3bxflmwndAqSMYHfHSsBE1pBIGJdFijxAhxm7hLIt4XAKN8eFvJ5ayJCiTp4zMbvppCVXW8W5kE5ESYiPf8nGuCiRitcQ69erxGkiKehOttNxNc_pkM.5g7SFGCUa2sMe9W8QpcD7IZL9wjBda0CLLlwaLIqMeM&dib_tag=se&keywords=iphone%2B17%2Bpro&qid=1765091692&sprefix=IPhone%2B17%2Caps%2C207&sr=8-10&th=1" },
+      { name: "DSLR Camera", url: "https://www.amazon.in/Canon-Digital-Camera-RF-S18-45mm-White/dp/B0BZHWQ2D1/ref=sr_1_1_sspa?crid=1FRER5ZVTBJGJ&dib=eyJ2IjoiMSJ9.XlHhFJLRvz8DD16S66-o6OINv5-VSXVaznXhZLTzYGRC3x4gm2nI1kjX-s8hWymWSMZxXj-reQLhBdpAhldLXr6GrklKzfcXc9i4xpwH536YKceqd5RvJTgMbvVVBzYlI9vhlDGq9RLVib_pjKixiuf-t5QyQtgIJcTobifkyJYN-3P12pZV9Itr4iOQmrI9F_UJ1Z39rm-EAKxudRXbMW4wvXW_wFJdcD8YdihsjDc.3Dvo-zgI9cRjy-u9V0d0ghl3pfwylS2UISjKxRqB4gU&dib_tag=se&keywords=dslr%2Bcamera%2B4k&qid=1765006719&sprefix=DSLR%2Caps%2C884&sr=8-1-spons&aref=PjentbxHxY&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1" },
+      { name: "Yamaha Guitar", url: "https://www.amazon.in/Yamaha-F280-Acoustic-Guitar-Natural/dp/B08317Y4VP/ref=sr_1_5?crid=16H595XOH1971&dib=eyJ2IjoiMSJ9.N1YFSeHUz_jGNmkhdf1pAS9UUtvevUmp3j1lg44gBv_sS2nlnjaBsVgc3oA6uvyvcbeyP3WJMHMdJ_pGwhlpjJfWeM_G41Cxzy0mIH-aHrJPbt595o71ScSAuj-n5SOvh59XU9FpITYQ45cCoD65iggbADxzQIqDK1RrtkRkEixJJdAsAUivKfLcVuKIornr1x1rkd_Wos0T87FFkYho8M13AWqAI3e1oASnAZSV8CdrudtJgXL-qknchOFJWLhqyus7FpLsyUpCG3KUi4MIP18CPAnTib-BwgF64ZmD8o4.ZAmHc5B9p-slljBBUScky0W56iBsPWAqonhRN4YA5ls&dib_tag=se&keywords=guitar+yamaha&nsdOptOutParam=true&qid=1765006779&sprefix=Guitar+%2Caps%2C725&sr=8-5" },
+      { name: "Nike Running Shoes UK-8", url: "https://www.nike.com/in/t/wio-11-road-running-shoes-2SNS3P/FJ9509-006" }
+    ];
+
+    function loadItems() {
+      const saved = localStorage.getItem("giftItems");
+      return saved ? JSON.parse(saved) : defaultItems;
+    }
+
+    function saveItems(items) {
+      localStorage.setItem("giftItems", JSON.stringify(items));
+    }
+
+    function renderList() {
+      const list = document.getElementById("giftList");
+      const items = loadItems();
+      list.innerHTML = "";
+
+      items.forEach(item => {
+        const li = document.createElement("li");
+        li.innerHTML = `${item.name} <a href="${item.url}" target="_blank">Buy</a>`;
+        list.appendChild(li);
+      });
+    }
+
+    // -------------------------------
+    // SECRET ADMIN LOGIN + ADD ITEM
+    // -------------------------------
+    const ADMIN_PASSWORD = "Adarsh2025";
+
+    function openAdminLogin() {
+      const pass = prompt("Enter admin password:");
+
+      if (pass === ADMIN_PASSWORD) {
+        openAdminPanel();
+      } else {
+        showToast("😂 Wrong password! You're not the Santa Admin!");
+      }
+    }
+
+    function openAdminPanel() {
+      const name = prompt("Enter New Gift Name:");
+      if (!name) return;
+
+      const url = prompt("Enter Product URL:");
+      if (!url) return;
+
+      const items = loadItems();
+      items.push({ name, url });
+      saveItems(items);
+
+      alert("🎉 Item added successfully!");
+      renderList();
+    }
+
+    // -------------------------------
+    // TOAST MESSAGE
+    // -------------------------------
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+
+      setTimeout(() => {
+        t.style.display = "none";
+      }, 2000);
+    }
+
+    // Initialize
+    renderList();
+  </script>
+
+</body>
+</html>
